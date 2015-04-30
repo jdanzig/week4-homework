@@ -6,18 +6,22 @@ class PlacesController < ApplicationController
 
   def show
     @place = Place.find(params[:id])
+    @review = Review.new
   end
 
   def new
+    @place = Place.new
   end
 
-  def submitted
-    Place.create title: params[:title],
-                 price: (params[:price].to_f * 100).to_i,
-                 photo_url: params[:url],
-                 desc: params[:desc]
+  def create
+    @place = Place.new
+    @place.title = params[:place][:title]
+    @place.price = (params[:place][:price].to_f * 100.0).to_i
+    @place.photo_url = params[:place][:photo_url]
+    @place.desc = params[:place][:desc]
+    @place.save!
 
-    redirect_to root_path
+    redirect_to @place
   end
 
   def edit
@@ -26,17 +30,19 @@ class PlacesController < ApplicationController
 
   def update
     @place = Place.find(params[:id])
-    @place.update title: params[:title],
-                 price: (params[:price].to_f * 100).to_i,
-                 photo_url: params[:url],
-                 desc: params[:desc]
-
-    redirect_to "/places/#{@place.id}"
+    
+    @place.title = params[:place][:title]
+    @place.price = (params[:place][:price].to_f * 100.0).to_i
+    @place.photo_url = params[:place][:photo_url]
+    @place.desc = params[:place][:desc]
+    @place.save!
+    
+    redirect_to @place
   end
 
-  def delete
-    Place.delete(params[:id])
-    redirect_to root_path
+  def destroy
+    Place.find(params[:id]).destroy
+    redirect_to places_path
   end
 
 
